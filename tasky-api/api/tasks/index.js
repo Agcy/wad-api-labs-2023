@@ -20,15 +20,19 @@ router.get('/:id', (req, res) => {
 
 //Add a task
 router.post('/', (req, res) => {
-    const { title, description, deadline, priority, done } = req.body;
+    const datetimeCreate = new Date().toISOString();
+    const { title, description, deadline, priority, done, create_at, update_at } = req.body;
     const newTask = {
         id: uuidv4(),
         title,
         description,
         deadline,
         priority,
-        done
+        done,
+        create_at: datetimeCreate,
+        update_at: datetimeCreate
     };
+    
     tasksData.tasks.push(newTask);
     res.status(201).json(newTask);
     tasksData.total_results++;
@@ -41,7 +45,8 @@ router.put('/:id', (req, res) => {
     if (taskIndex === -1) {
         return res.status(404).json({ status: 404, message: 'Task not found' });
     }
-    const updatedTask = { ...tasksData.tasks[taskIndex], ...req.body, id:id };
+    const datetimeUpdate = new Date().toISOString();
+    const updatedTask = { ...tasksData.tasks[taskIndex], ...req.body, id:id, update_at:datetimeUpdate };
     tasksData.tasks[taskIndex] = updatedTask;
     res.json(updatedTask);
 });
